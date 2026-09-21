@@ -20,6 +20,7 @@ async function bootstrap() {
     .setTitle('API - Catálogo de Computadoras')
     .setDescription('Documentación de los endpoints para el PMV del catálogo')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
     
   const document = SwaggerModule.createDocument(app, config);

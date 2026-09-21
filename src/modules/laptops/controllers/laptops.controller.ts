@@ -1,21 +1,24 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { LaptopsService } from '../services/laptops.service';
 import { CreateLaptopDto } from '../dto/create-laptop.dto';
 import { UpdateLaptopDto } from '../dto/update-laptop.dto';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard'; // <-- Importa el Guard
 
-@ApiTags('Laptops') // Agrupa los endpoints en Swagger
+@ApiTags('Laptops')
 @Controller('laptops')
 export class LaptopsController {
   constructor(private readonly laptopsService: LaptopsService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Agregar una nueva computadora' })
-  @ApiResponse({ status: 201, description: 'Computadora creada exitosamente.' })
+  @UseGuards(JwtAuthGuard) // <-- Aplica el candado
+  @ApiBearerAuth() // <-- Muestra el candado en Swagger
+  @ApiOperation({ summary: 'Agregar una nueva computadora (Protegido)' })
   create(@Body() createLaptopDto: CreateLaptopDto) {
     return this.laptopsService.create(createLaptopDto);
   }
 
+  // GET NO LLEVA GUARD porque es público para el catálogo
   @Get()
   @ApiOperation({ summary: 'Obtener todo el catálogo de computadoras' })
   findAll() {
@@ -29,13 +32,17 @@ export class LaptopsController {
   }
 
   @Put(':id')
-  @ApiOperation({ summary: 'Actualizar una computadora existente' })
+  @UseGuards(JwtAuthGuard) // <-- Aplica el candado
+  @ApiBearerAuth() 
+  @ApiOperation({ summary: 'Actualizar una computadora existente (Protegido)' })
   update(@Param('id') id: string, @Body() updateLaptopDto: UpdateLaptopDto) {
     return this.laptopsService.update(id, updateLaptopDto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Eliminar una computadora' })
+  @UseGuards(JwtAuthGuard) // <-- Aplica el candado
+  @ApiBearerAuth() 
+  @ApiOperation({ summary: 'Eliminar una computadora (Protegido)' })
   remove(@Param('id') id: string) {
     return this.laptopsService.remove(id);
   }
