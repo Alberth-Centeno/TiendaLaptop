@@ -9,7 +9,7 @@ import { PassportModule } from '@nestjs/passport';
 @Module({
   imports: [
     UsersModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }), // <-- 2. Registrar Passport
+    PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -21,6 +21,6 @@ import { PassportModule } from '@nestjs/passport';
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
-  exports: [PassportModule], // <-- 3. Exportarlo para que LaptopsModule lo pueda usar
+  exports: [PassportModule],
 })
 export class AuthModule {}
