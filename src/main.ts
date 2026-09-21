@@ -7,8 +7,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Habilitar CORS para que el frontend pueda consumir la API sin problemas
-  app.enableCors();
-
+  app.enableCors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3001',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
   // Activar validaciones globales usando class-validator
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, // Elimina campos basura que no estén en el DTO
